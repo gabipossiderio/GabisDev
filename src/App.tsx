@@ -1,6 +1,6 @@
 import { Container } from "./components/container";
 import ImgGabi from "./assets/Gabi.jpg";
-import ImgSite from "./assets/ilust1.png";
+import ImgSite from "./assets/ilust2.png";
 import { useEffect, useState } from "react";
 import { MdLightMode, MdDarkMode } from "react-icons/md";
 import { BsChatHeart } from "react-icons/bs";
