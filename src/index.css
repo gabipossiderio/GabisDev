@@ -1,0 +1,60 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;400;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .text {
+    @apply font-text;
+  }
+  .menu {
+    @apply font-menu;
+  }
+}
+
+body[data-theme="dark"] {
+  .header,
+  .skills,
+  .contact {
+    background-color: #57534e;
+    background-image: url(../src/assets/background2.png);
+    background-size: cover;
+  }
+
+  .about,
+  .projects {
+    background-color: #9b9797ad;
+  }
+
+  footer {
+    background-color: #9b9797ad;
+  }
+}
+
+body[data-theme="light"] {
+  .header,
+  .skills,
+  .contact {
+    background-color: #d19146;
+    background-image: url(../src/assets/background2.png);
+    background-size: cover;
+  }
+
+  .about,
+  .projects {
+    background-color: #fff7ed;
+  }
+
+  footer {
+    background-color: #fff7ed;
+  }
+}
+
+div.swiper-button-prev,
+div.swiper-button-next {
+  
+   color: #57534e;
+   margin-top: 1px;
+}
