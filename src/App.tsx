@@ -2,12 +2,16 @@ import { Container } from "./components/container";
 import ImgGabi from "./assets/Gabi.jpg";
 import ImgSite from "./assets/ilust2.png";
 import { useEffect, useState } from "react";
-import { MdLightMode, MdDarkMode } from "react-icons/md";
-import { BsChatHeart } from "react-icons/bs";
+import { MdLightMode, MdDarkMode, MdEmail } from "react-icons/md";
+import { BsChatHeart, BsGithub, BsLinkedin, BsWhatsapp } from "react-icons/bs";
 import { Transition } from "@headlessui/react";
 import { TbMenu2 } from "react-icons/tb";
-import { IoIosCloseCircleOutline, IoLogoJavascript } from "react-icons/io";
-import { FaHtml5, FaReact, FaGitAlt, FaPython } from "react-icons/fa";
+import {
+  IoIosCloseCircleOutline,
+  IoLogoJavascript,
+  IoIosArrowDropupCircle,
+} from "react-icons/io";
+import { FaHtml5, FaReact, FaGitAlt, FaPython, FaHeart } from "react-icons/fa";
 import { SiTypescript, SiTailwindcss } from "react-icons/si";
 import { BsFillChatHeartFill } from "react-icons/bs";
 import { FaCss3Alt } from "react-icons/fa6";
@@ -20,22 +24,27 @@ import ImgPhraseGenerator from "./assets/phrase-generator.png";
 import ImgRangeHotels from "./assets/range-hotels.png";
 import ImgShoppingCart from "./assets/shopping-cart.png";
 import ImgWebCarros from "./assets/web-carros.png";
+import AnimateOnScroll from "./components/scroll";
+import { Header } from "./components/header";
+import { SkillCard } from "./components/skillCard";
+import { Slide } from "./components/slide";
+import { ContactCard } from "./components/contactCard";
 
 function App() {
   const [theme, setTheme] = useState("light");
   const [isOpen, setIsOpen] = useState(false);
   const [screenWidth, setScreenWidth] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
   const [sliderPerView, setSliderPerView] = useState<number>(1);
+  const [isVisible, setIsVisible] = useState(false);
+  const date = new Date();
+  const currentYear = date.getFullYear();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       setTheme(savedTheme);
     }
-  }, [theme]);
 
-  useEffect(() => {
     if (theme === "dark") {
       document.body.classList.add("dark");
       document.body.setAttribute("data-theme", "dark");
@@ -47,43 +56,31 @@ function App() {
 
   useEffect(() => {
     window.addEventListener("scroll", handleMenu);
-    window.addEventListener("resize", handleMenu);
-    const section = document.getElementById("skills");
+    window.addEventListener("resize", () => {
+      handleMenu(), handleScreenWidth(window.innerWidth);
+    });
 
-    if (window.innerWidth > 1024) {
-      setScreenWidth(true);
-      setSliderPerView(3);
-    } else if (window.innerWidth < 1024 && 640 < window.innerWidth) {
-      setSliderPerView(2);
-    } else {
-      setScreenWidth(false);
-      setSliderPerView(1);
+    handleScreenWidth(window.innerWidth);
+
+    function handleScreenWidth(width: number) {
+      if (width > 1024) {
+        setScreenWidth(true);
+        setSliderPerView(3);
+      } else if (width < 1024 && 640 < width) {
+        setSliderPerView(2);
+      } else {
+        setScreenWidth(false);
+        setSliderPerView(1);
+      }
     }
 
     function handleMenu() {
       if (isOpen) {
         setIsOpen(false);
       }
-      if (window.innerWidth > 1024) {
-        setScreenWidth(true);
-        setSliderPerView(3);
-      } else if (window.innerWidth < 1024 && 640 < window.innerWidth) {
-        setSliderPerView(2);
-      } else {
-        setScreenWidth(false);
-        setSliderPerView(1);
-      }
-      if (section) {
-        const rect = section.getBoundingClientRect();
-        const windowHeight =
-          window.innerHeight || document.documentElement.clientHeight;
+      const scrollTop = window.scrollY;
 
-        if (rect.top < windowHeight && rect.bottom >= 0) {
-          setIsVisible(true);
-        } else {
-          setIsVisible(false);
-        }
-      }
+      setIsVisible(scrollTop > 300);
     }
 
     return () => {
@@ -100,9 +97,16 @@ function App() {
     });
   }
 
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
   return (
     <>
-      <div className="w-full text select-none dark:bg-stone-700 py-4 dark:text-white text-stone-600/80 tracking-wide font-medium menu uppercase h-16 bg-orange-50 z-10 drop-shadow text-base fixed">
+      <div className="w-full text select-none fixed dark:bg-stone-700 py-4 dark:text-white text-stone-600/80 tracking-wide font-medium menu uppercase h-16 bg-orange-50 z-10 drop-shadow text-base">
         <div className="flex w-full items-center justify-between max-w-7xl px-4 mx-auto">
           <div className="flex items-center gap-2">
             <MdLightMode
@@ -141,31 +145,7 @@ function App() {
           </div>
           {screenWidth && (
             <div className="flex gap-7 dark:font-medium text-lg tracking-wide">
-              {" "}
-              <a
-                className=" dark:hover:text-white hover:text-amber-700 hover:scale-110 transition-all ease-linear"
-                href="#about"
-              >
-                Sobre
-              </a>
-              <a
-                className="dark:hover:text-white hover:text-amber-700 hover:scale-110 transition-all ease-linear"
-                href="#skills"
-              >
-                Habilidades
-              </a>
-              <a
-                className="dark:hover:text-white hover:text-amber-700 hover:scale-110 transition-all ease-linear"
-                href="#projects"
-              >
-                Projetos
-              </a>
-              <a
-                className="dark:hover:text-white hover:text-amber-700 hover:scale-110 transition-all ease-linear"
-                href="#contact"
-              >
-                Contato
-              </a>
+              <Header />
             </div>
           )}
         </div>
@@ -184,30 +164,7 @@ function App() {
               ref={ref}
               className="my-4 p-6 text-2xl text-stone-600 dark:text-white dark:bg-stone-900 font-bold bg-white min-h-screen flex flex-col gap-7"
             >
-              <a
-                className=" dark:hover:text-white p-6 hover:text-amber-700 hover:scale-110 transition-all ease-linear"
-                href="#about"
-              >
-                Sobre
-              </a>
-              <a
-                className="dark:hover:text-white p-6 hover:text-amber-700 hover:scale-110 transition-all ease-linear"
-                href="#skills"
-              >
-                Habilidades
-              </a>
-              <a
-                className="dark:hover:text-white p-6 hover:text-amber-700 hover:scale-110 transition-all ease-linear"
-                href="#projects"
-              >
-                Projetos
-              </a>
-              <a
-                className="dark:hover:text-white p-6 hover:text-amber-700 hover:scale-110 transition-all ease-linear"
-                href="#contact"
-              >
-                Contato
-              </a>
+              <Header />
             </div>
           )}
         </Transition>
@@ -232,9 +189,13 @@ function App() {
               </p>
               <div className="flex gap-6 justify-center mt-4">
                 {" "}
-                <button className="menu uppercase mb-2 font-medium tracking-wider hover:font-medium text-sm bg-white/80 dark:bg-amber-600/80 px-14 drop-shadow-md hover:bg-white dark:text-white dark:hover:bg-amber-600 hover:scale-110 transition-all ease-out text-amber-800 py-2 rounded-2xl">
-                  Download
-                </button>
+                <a
+                  href="CurriculoGabi.pdf"
+                  download
+                  className="menu uppercase mb-2 font-medium tracking-wider hover:font-medium text-sm bg-white/80 dark:bg-amber-600/80 px-14 drop-shadow-md hover:bg-white dark:text-white dark:hover:bg-amber-600 hover:scale-110 transition-all ease-out text-amber-800 py-2 rounded-2xl"
+                >
+                  Download CV
+                </a>
               </div>
             </div>
             <div className="flex justify-end">
@@ -274,9 +235,13 @@ function App() {
               </p>
               <div className="flex gap-6 justify-center mt-4">
                 {" "}
-                <button className="menu mb-10 md:mb-0 uppercase font-medium tracking-wider hover:font-medium text-xs bg-stone-600/80 dark:bg-amber-600/80 px-10 drop-shadow-md hover:bg-stone-600 dark:text-white dark:hover:bg-amber-600 hover:scale-110 transition-all ease-out text-white py-2 rounded-2xl">
-                  Download
-                </button>
+                <a
+                  href="CurriculoGabi.pdf"
+                  download
+                  className="menu mb-10 md:mb-0 uppercase font-medium tracking-wider hover:font-medium text-xs bg-stone-600/80 dark:bg-amber-600/80 px-10 drop-shadow-md hover:bg-stone-600 dark:text-white dark:hover:bg-amber-600 hover:scale-110 transition-all ease-out text-white py-2 rounded-2xl"
+                >
+                  Download CV
+                </a>
               </div>
             </div>
             <div></div>
@@ -292,349 +257,168 @@ function App() {
         <Container>
           <h1 className="text-amber-800 dark:text-white lg:ml-10 md:ml-6 flex flex-col items-center sm:items-start justify-center mb-4 text-5xl text font-black uppercase drop-shadow-lg tracking-wide">
             Tech
-            <h2 className="  text-white dark:text-amber-700/90 text-7xl text font-black uppercase drop-shadow-lg tracking-wide">
+            <h2 className="  text-white dark:text-amber-600/90 text-7xl text font-black uppercase drop-shadow-lg tracking-wide">
               Stack
             </h2>
           </h1>
-
-          <Transition
-            show={isVisible}
-            enter="transition duration-500 ease-in-out"
-            enterFrom="opacity-0 transform translate-x-[-100%]"
-            enterTo="opacity-100 transform translate-x-0"
-            leave="transition duration-500 ease-in-out"
-            leaveFrom="opacity-100 transform translate-x-[-100%]"
-            leaveTo="opacity-0 transform translate-x-4"
-          >
-            <div className="select-none place-items-center gap-2 w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 sm:grid-cols-2">
-              <article className="h-32 duration-500 menu w-56 rounded-lg flex mt-3 lg:mt-6 mb-3 transition-all hover:scale-105 text-stone-600/80 hover:text-amber-700 items-center justify-center flex-col bg-white/80">
-                <h1 className="text-xl flex flex-col items-center">
-                  React.Js <FaReact size={32} />
-                </h1>
-              </article>
-              <article className="h-32 duration-500 menu w-56 rounded-lg flex mt-3 lg:mt-6 mb-3 transition-all hover:scale-105 text-stone-600/80 hover:text-amber-700 items-center justify-center flex-col bg-white/80">
-                <h1 className="text-xl flex flex-col items-center">
-                  TypeScript <SiTypescript size={32} />
-                </h1>
-              </article>
-              <article className="h-32 duration-500 menu w-56  rounded-lg flex mt-3 lg:mt-6 mb-3 transition-all hover:scale-105 text-stone-600/80 hover:text-amber-700 items-center justify-center flex-col bg-white/80">
-                <h1 className="text-xl flex flex-col items-center">
-                  Tailwind CSS <SiTailwindcss size={32} />
-                </h1>
-              </article>
-              <article className="h-32 duration-500 menu w-56 rounded-lg flex mt-3 mb-3 lg:mt-6 transition-all hover:scale-105 text-stone-600/80 hover:text-amber-700 items-center justify-center flex-col bg-white/80">
-                <h1 className="text-xl flex flex-col items-center">
-                  Python <FaPython size={32} />
-                </h1>
-              </article>
-              <article className="h-32 duration-500 menu w-56 rounded-lg flex mt-3 lg:mt-6 mb-3 transition-all hover:scale-105 text-stone-600/80 hover:text-amber-700 items-center justify-center flex-col bg-white/80">
-                <h1 className="text-xl flex flex-col items-center">
-                  HTML5 <FaHtml5 size={32} />
-                </h1>
-              </article>
-              <article className="h-32 duration-500 menu w-56  rounded-lg flex mt-3 lg:mt-6 mb-3 transition-all hover:scale-105 text-stone-600/80 hover:text-amber-700 items-center justify-center flex-col bg-white/80">
-                <h1 className="text-xl flex flex-col items-center">
-                  CSS3 <FaCss3Alt size={32} />
-                </h1>
-              </article>
-              <article className="h-32 duration-500 menu w-56 rounded-lg flex mt-3 lg:mt-6 mb-3 transition-all hover:scale-105 text-stone-600/80 hover:text-amber-700 items-center justify-center flex-col bg-white/80">
-                <h1 className="text-xl flex flex-col items-center">
-                  JavaScript <IoLogoJavascript size={32} />
-                </h1>
-              </article>
-              <article className="h-32 duration-500 menu w-56 rounded-lg flex mt-3 lg:mt-6 mb-10 sm:mb-3 transition-all hover:scale-105 text-stone-600/80 hover:text-amber-700 items-center justify-center flex-col bg-white/80">
-                <h1 className="text-xl flex flex-col items-center">
-                  Git <FaGitAlt size={32} />
-                </h1>
-              </article>
+          <AnimateOnScroll>
+            <div className="select-none place-items-center pb-3 gap-2 w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              <SkillCard name="React.Js" Icon={FaReact} />
+              <SkillCard name="TypeScript" Icon={SiTypescript} />
+              <SkillCard name="Tailwind CSS" Icon={SiTailwindcss} />
+              <SkillCard name="Python" Icon={FaPython} />
+              <SkillCard name="HTML5" Icon={FaHtml5} />
+              <SkillCard name="CSS3" Icon={FaCss3Alt} />
+              <SkillCard name="JavaScript" Icon={IoLogoJavascript} />
+              <SkillCard name="Git" Icon={FaGitAlt} />
             </div>
-          </Transition>
+          </AnimateOnScroll>
         </Container>
       </section>
       <section id="projects" className="projects min-h-screen select-none ">
         <Container>
           {" "}
-          <h1 className="text-amber-800 dark:text-stone-700 flex flex-col items-center tracking-wider justify-center mb-8 text-5xl sm:text-7xl md:text-8xl text font-black uppercase drop-shadow-lg">
-            Projects
+          <h1 className="text-amber-800 dark:text-stone-700 flex flex-col sm:flex-row gap-1 sm:gap-6 items-center tracking-wide justify-center mb-8 text-6xl sm:text-7xl md:text-8xl text font-black uppercase drop-shadow-lg">
+            Meus{" "}
+            <span className="dark:text-stone-900/80 text-amber-900">
+              Projetos
+            </span>
           </h1>
           <Swiper
             slidesPerView={sliderPerView}
-            className=" w-full mt-6  max-w-96 sm:max-w-2xl md:max-w-3xl lg:max-w-6xl text-stone-700 rounded-lg"
+            className=" w-full mt-6 max-w-96 sm:max-w-2xl md:max-w-3xl lg:max-w-6xl text-stone-700 rounded-lg"
             pagination={{ clickable: true }}
             navigation
             loop={true}
           >
             <SwiperSlide>
-              <div className="select-none text-center text transition-all ease-in-out hover:scale-105 my-14 mx-2 ">
-                {" "}
-                <img
-                  src={ImgGabisLinks}
-                  alt="Site Gabis Links"
-                  className=" object-cover border-4 border-white/60 rounded-lg drop-shadow-lg h-64"
-                />
-                <div className="absolute inset-0 rounded-lg  flex items-center bg-white/90 flex-col  dark:bg-stone-400/90 justify-center opacity-0 transition-opacity duration-300 hover:opacity-100">
-                  <h1 className="p-3 text-lg bg-amber-800/40 duration-500 dark:bg-stone-700/40 w-full m-2 menu dark:text-white text-stone-600 font-black ">
-                    A repository of links made in React
-                  </h1>{" "}
-                  <div className="flex gap-3 menu text-sm cursor-pointer items-center">
-                    <a
-                      href="https://github.com/gabipossiderio/GabisLinks"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 dark:hover:bg-stone-700 hover:bg-amber-800 text-white font-bold transition-all duration-150 py-2 px-4  rounded shadow"
-                    >
-                      Repositório
-                    </a>
-                    <a
-                      href="https://links.gabis.dev/"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 hover:bg-amber-800 dark:hover:bg-stone-700 text-white font-bold transition-all duration-150 h-700 py-2 px-2  rounded shadow"
-                    >
-                      Acessar Projeto
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className="select-none text-center text transition-all ease-in-out hover:scale-105 my-14 mx-2 ">
-                {" "}
-                <img
-                  src={ImgWebCarros}
-                  alt="Site Web Carros"
-                  className=" object-cover border-4 border-white/60 rounded-lg drop-shadow-lg  h-64"
-                />
-                <div className="absolute inset-0 rounded-lg  flex items-center bg-white/90 flex-col dark:bg-stone-400/90 justify-center opacity-0 transition-opacity duration-300 hover:opacity-100">
-                  <h1 className="p-3 text-lg bg-amber-800/40 duration-500 dark:bg-stone-700/40 w-full m-2 menu dark:text-white text-stone-600 font-black ">
-                    Cars showcase website made in React, firebase and typescript
-                  </h1>{" "}
-                  <div className="flex gap-3 menu text-sm cursor-pointer items-center">
-                    <a
-                      href="https://github.com/gabipossiderio/WebCarros"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 dark:hover:bg-stone-700 hover:bg-amber-800 text-white font-bold transition-all duration-150 py-2 px-4  rounded shadow"
-                    >
-                      Repositório
-                    </a>
-                    <a
-                      href="https://web-carros.gabis.dev/"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 hover:bg-amber-800 dark:hover:bg-stone-700 text-white font-bold transition-all duration-150 h-700 py-2 px-2  rounded shadow"
-                    >
-                      Acessar Projeto
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <Slide
+                ImgLink={ImgGabisLinks}
+                altText="Site Gabis Links"
+                description="A repository of links made in React"
+                repoLink="https://github.com/gabipossiderio/GabisLinks"
+                projectLink="https://links.gabis.dev/"
+              />
             </SwiperSlide>
             <SwiperSlide>
-              <div className="select-none text-center text transition-all ease-in-out hover:scale-105 my-14 mx-2 ">
-                {" "}
-                <img
-                  src={ImgPhraseGenerator}
-                  alt="Site Phrase Generator"
-                  className=" object-cover h-64 border-4 border-white/60 rounded-lg drop-shadow-lg "
-                />
-                <div className="absolute inset-0 rounded-lg  flex items-center bg-white/90 flex-col dark:bg-stone-400/90 justify-center opacity-0 transition-opacity duration-300 hover:opacity-100">
-                  <h1 className="p-3 text-lg bg-amber-800/40 duration-500 dark:bg-stone-700/40 w-full m-2 menu dark:text-white text-stone-600 font-black ">
-                    Phrase Generator made in React
-                  </h1>{" "}
-                  <div className="flex gap-3 menu text-sm cursor-pointer items-center">
-                    <a
-                      href="https://github.com/gabipossiderio/PhraseGenerator"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 dark:hover:bg-stone-700 hover:bg-amber-800 text-white font-bold transition-all duration-150 py-2 px-4  rounded shadow"
-                    >
-                      Repositório
-                    </a>
-                    <a
-                      href="https://phrase-generator.gabis.dev/"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 hover:bg-amber-800 dark:hover:bg-stone-700 text-white font-bold transition-all duration-150 h-700 py-2 px-2  rounded shadow"
-                    >
-                      Acessar Projeto
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <div className="select-none text-center text transition-all ease-in-out hover:scale-105 my-14 mx-2 ">
-                {" "}
-                <img
-                  src={ImgShoppingCart}
-                  alt="Site Shopping Cart"
-                  className=" object-cover h-64 border-4 border-white/60 rounded-lg drop-shadow-lg "
-                />
-                <div className="absolute inset-0 rounded-lg  flex items-center bg-white/90 flex-col dark:bg-stone-400/90 justify-center opacity-0 transition-opacity duration-300 hover:opacity-100">
-                  <h1 className="p-3 text-lg bg-amber-800/40 duration-500 dark:bg-stone-700/40 w-full m-2 menu dark:text-white text-stone-600 font-black ">
-                    Shopping cart application made in React
-                  </h1>{" "}
-                  <div className="flex gap-3 menu text-sm cursor-pointer items-center">
-                    <a
-                      href="https://github.com/gabipossiderio/ShoppingCart"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 dark:hover:bg-stone-700 hover:bg-amber-800 text-white font-bold transition-all duration-150 py-2 px-4  rounded shadow"
-                    >
-                      Repositório
-                    </a>
-                    <a
-                      href="https://shopping-cart.gabis.dev/"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 hover:bg-amber-800 dark:hover:bg-stone-700 text-white font-bold transition-all duration-150 h-700 py-2 px-2  rounded shadow"
-                    >
-                      Acessar Projeto
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <Slide
+                ImgLink={ImgWebCarros}
+                altText="Site Web Carros"
+                description="Cars showcase website made in React, firebase and typescript"
+                repoLink="https://github.com/gabipossiderio/WebCarros"
+                projectLink="https://web-carros.gabis.dev/"
+              />
             </SwiperSlide>
             <SwiperSlide>
-              <div className="select-none text-center text transition-all ease-in-out hover:scale-105 my-14 mx-2 ">
-                {" "}
-                <img
-                  src={ImgFuelPrice}
-                  alt="Site Fuel Price"
-                  className=" object-cover h-64 border-4 border-white/60 rounded-lg drop-shadow-lg "
-                />
-                <div className="absolute inset-0 rounded-lg  flex items-center bg-white/90 flex-col dark:bg-stone-400/90 justify-center opacity-0 transition-opacity duration-300 hover:opacity-100">
-                  <h1 className="p-3 text-lg bg-amber-800/40 duration-500 dark:bg-stone-700/40 w-full m-2 menu dark:text-white text-stone-600 font-black ">
-                    Fuel price comparator made in React
-                  </h1>{" "}
-                  <div className="flex gap-3 menu text-sm cursor-pointer items-center">
-                    <a
-                      href="https://github.com/gabipossiderio/FuelPriceComparator"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 dark:hover:bg-stone-700 hover:bg-amber-800 text-white font-bold transition-all duration-150 py-2 px-4  rounded shadow"
-                    >
-                      Repositório
-                    </a>
-                    <a
-                      href="https://fuel-price.gabis.dev/"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 hover:bg-amber-800 dark:hover:bg-stone-700 text-white font-bold transition-all duration-150 h-700 py-2 px-2  rounded shadow"
-                    >
-                      Acessar Projeto
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <Slide
+                ImgLink={ImgPhraseGenerator}
+                altText="Site Phrase Generator"
+                description="Phrase Generator made in React"
+                repoLink="https://github.com/gabipossiderio/PhraseGenerator"
+                projectLink="https://phrase-generator.gabis.dev/"
+              />
             </SwiperSlide>
             <SwiperSlide>
-              <div className="select-none text-center text transition-all ease-in-out hover:scale-105 my-14 mx-2 ">
-                {" "}
-                <img
-                  src={ImgRangeHotels}
-                  alt="Site Range Hotels"
-                  className=" object-cover h-64 border-4 border-white/60 rounded-lg drop-shadow-lg "
-                />
-                <div className="absolute inset-0 rounded-lg  flex items-center bg-white/90 flex-col dark:bg-stone-400/90 justify-center opacity-0 transition-opacity duration-300 hover:opacity-100">
-                  <h1 className="p-3 text-lg bg-amber-800/40 duration-500 dark:bg-stone-700/40 w-full m-2 menu dark:text-white text-stone-600 font-black ">
-                    CSS, HTML and JavaScript Hotel Website
-                  </h1>{" "}
-                  <div className="flex gap-3 menu text-sm cursor-pointer items-center">
-                    <a
-                      href="https://github.com/gabipossiderio/RangeHotels"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 dark:hover:bg-stone-700 hover:bg-amber-800 text-white font-bold transition-all duration-150 py-2 px-4  rounded shadow"
-                    >
-                      Repositório
-                    </a>
-                    <a
-                      href="https://range-hotels.gabis.dev/"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 hover:bg-amber-800 dark:hover:bg-stone-700 text-white font-bold transition-all duration-150 h-700 py-2 px-2  rounded shadow"
-                    >
-                      Acessar Projeto
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <Slide
+                ImgLink={ImgShoppingCart}
+                altText="Site Shopping Cart"
+                description="Shopping cart application made in React"
+                repoLink="https://github.com/gabipossiderio/ShoppingCart"
+                projectLink="https://shopping-cart.gabis.dev/"
+              />
             </SwiperSlide>
             <SwiperSlide>
-              <div className="select-none text-center text transition-all ease-in-out hover:scale-105 my-14 mx-2 ">
-                {" "}
-                <img
-                  src={ImgLandingPage}
-                  alt="Landing Page"
-                  className=" object-cover h-64 border-4 border-white/60 rounded-lg drop-shadow-lg "
-                />
-                <div className="absolute inset-0 rounded-lg  flex items-center bg-white/90 flex-col dark:bg-stone-400/90 justify-center opacity-0 transition-opacity duration-300 hover:opacity-100">
-                  <h1 className="p-3 text-lg bg-amber-800/40 duration-500 dark:bg-stone-700/40 w-full m-2 menu dark:text-white text-stone-600 font-black ">
-                    HTML/CSS Landing Page
-                  </h1>{" "}
-                  <div className="flex gap-3 menu text-sm cursor-pointer items-center">
-                    <a
-                      href="https://github.com/gabipossiderio/HuddleLandingPage"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 dark:hover:bg-stone-700 hover:bg-amber-800 text-white font-bold transition-all duration-150 py-2 px-4  rounded shadow"
-                    >
-                      Repositório
-                    </a>
-                    <a
-                      href="https://landing-page.gabis.dev/"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 hover:bg-amber-800 dark:hover:bg-stone-700 text-white font-bold transition-all duration-150 h-700 py-2 px-2  rounded shadow"
-                    >
-                      Acessar Projeto
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <Slide
+                ImgLink={ImgFuelPrice}
+                altText="Site Fuel Price"
+                description="Fuel price comparator made in React"
+                repoLink="https://github.com/gabipossiderio/FuelPriceComparator"
+                projectLink="https://fuel-price.gabis.dev/"
+              />
             </SwiperSlide>
             <SwiperSlide>
-              <div className="select-none text-center text transition-all ease-in-out hover:scale-105 my-14 mx-2 ">
-                {" "}
-                <img
-                  src={ImgAgeCalculator}
-                  alt="Site Age Calculator"
-                  className=" object-cover h-64 border-4 border-white/60 rounded-lg drop-shadow-lg "
-                />
-                <div className="absolute inset-0 rounded-lg  flex items-center bg-white/90 flex-col dark:bg-stone-400/90 justify-center opacity-0 transition-opacity duration-300 hover:opacity-100">
-                  <h1 className="p-3 text-lg bg-amber-800/40 duration-500 dark:bg-stone-700/40 w-full m-2 menu dark:text-white text-stone-600 font-black ">
-                    Age calculator made in React
-                  </h1>{" "}
-                  <div className="flex gap-3 menu text-sm cursor-pointer items-center">
-                    <a
-                      href="https://github.com/gabipossiderio/AgeCalculator"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 dark:hover:bg-stone-700 hover:bg-amber-800 text-white font-bold transition-all duration-150 py-2 px-4  rounded shadow"
-                    >
-                      Repositório
-                    </a>
-                    <a
-                      href="https://age-calculator.gabis.dev/"
-                      target="_blank"
-                      className="dark:bg-stone-700/80 bg-amber-800/80 hover:bg-amber-800 dark:hover:bg-stone-700 text-white font-bold transition-all duration-150 h-700 py-2 px-2  rounded shadow"
-                    >
-                      Acessar Projeto
-                    </a>
-                  </div>
-                </div>
-              </div>
+              <Slide
+                ImgLink={ImgRangeHotels}
+                altText="Site Range Hotels"
+                description="CSS, HTML and JavaScript Hotel Website"
+                repoLink="https://github.com/gabipossiderio/RangeHotels"
+                projectLink="https://range-hotels.gabis.dev/"
+              />
+            </SwiperSlide>
+            <SwiperSlide>
+              <Slide
+                ImgLink={ImgLandingPage}
+                altText="Landing Page"
+                description="HTML/CSS Landing Page"
+                repoLink="https://github.com/gabipossiderio/HuddleLandingPage"
+                projectLink="https://landing-page.gabis.dev/"
+              />
+            </SwiperSlide>
+            <SwiperSlide>
+              <Slide
+                ImgLink={ImgAgeCalculator}
+                altText="Site Age Calculator"
+                description=" Age calculator made in React"
+                repoLink="https://github.com/gabipossiderio/AgeCalculator"
+                projectLink="https://age-calculator.gabis.dev/"
+              />
             </SwiperSlide>
           </Swiper>
         </Container>
       </section>
       <section id="contact" className="contact min-h-screen select-none">
         <Container>
-          <div className="text flex flex-col sm:items-end sm:justify-end items-start justify-center">
-          <h1 className="text-white/80 flex flex-col items-center tracking-wide mb-1 justify-center text-5xl sm:text-7xl md:text-7xl lg:text-8xl text font-black uppercase drop-shadow-lg">
-            Entre
-          </h1><h1 className="text-white/80 flex flex-row items-center tracking-wider justify-center gap-3 text-5xl sm:text-7xl md:text-7xl lg:text-8xl text font-black uppercase drop-shadow-lg">
-          Em<div className="sm:text-5xl lg:pt-4 text-3xl animate-waving-hand"><BsFillChatHeartFill /></div>
-          </h1><h1 className="text-white/80 flex flex-col items-center tracking-wider border-b-2 border-amber-700 dark:border-white/80 justify-center text-5xl sm:text-7xl md:text-7xl lg:text-8xl text font-black uppercase drop-shadow-lg">
-            Contato
-          </h1>
+          <div className="text flex flex-col justify-center">
+            <h1 className="text-white/80 mb-6 flex flex-row gap-4 items-center border-b-2 w-fit mx-auto border-amber-700 dark:border-white/80 tracking-tight justify-center text-6xl sm:text-7xl md:text-7xl lg:text-8xl text font-black uppercase drop-shadow-lg">
+              Contato{" "}
+              <div className="sm:text-5xl text-3xl animate-waving-hand">
+                <BsFillChatHeartFill />
+              </div>
+            </h1>
+            <AnimateOnScroll>
+              <div className="grid grid-cols-1 place-items-center mb-4 md:gap-8 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                {" "}
+               <ContactCard name="GitHub" Icon={BsGithub} description="@gabipossiderio" href="https://github.com/gabipossiderio"/>
+               <ContactCard name="LinkedIn" Icon={BsLinkedin} description="@gabriella-possiderio" href="https://www.linkedin.com/in/gabriella-possiderio/"/>
+               <ContactCard name="E-mail" Icon={MdEmail} description="gabipossiderio@gmail.com" href="mailto:gabipossiderio@gmail.com"/>
+               <ContactCard name="WhatsApp" Icon={BsWhatsapp} description="(21) 99265-6515" href="https://api.whatsapp.com/send?phone=5521992656515"/>
+         
+               
+              </div>
+            </AnimateOnScroll>
           </div>
         </Container>
       </section>
+
       <div className="relative">
-        <footer className="bg-orange-50 z-10 border-t-8 dark:border-stone-700 border-amber-700 absolute bottom-0 w-full h-14">
-          FOOTER
+        <footer className="bg-orange-50 z-10 flex flex-col border-t-8 dark:border-stone-700 border-amber-700 w-full sm:h-14 h-20">
+          <small className="text-xs menu flex p-3 justify-center gap-1 dark:text-stone-800/90 text-stone-600">
+            <div className="flex flex-wrap items-center justify-center gap-1">
+              <p>Todos os direitos reservados &#xa9; {currentYear} • </p>{" "}
+              <p>
+                Desenvolvido por{" "}
+                <a
+                  href="https://links.gabis.dev/profile/8JdYM56zWSNofa5QBKKIWZRyGAt2"
+                  className="text-blue-700 transition-all ease-out duration-500 hover:text-white"
+                >
+                  GabisDev
+                </a>
+              </p>
+              <div className="flex items-center">
+                <FaHeart size={8} />
+              </div>
+            </div>
+          </small>
         </footer>
       </div>
+      <button
+        onClick={scrollToTop}
+        className={`fixed md:bottom-2 bottom-16  right-4 p-2 z-20 dark:bg-amber-600 bg-amber-900 text-white rounded-full transition-opacity ${
+          isVisible ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <IoIosArrowDropupCircle size={30} />
+      </button>
     </>
   );
 }

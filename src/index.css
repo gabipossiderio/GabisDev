@@ -31,6 +31,10 @@ body[data-theme="dark"] {
   footer {
     background-color: #9b9797ad;
   }
+  div.swiper-button-prev,
+  div.swiper-button-next {
+    color: #fff;
+  }
 }
 
 body[data-theme="light"] {
@@ -50,11 +54,8 @@ body[data-theme="light"] {
   footer {
     background-color: #fff7ed;
   }
-}
-
-div.swiper-button-prev,
-div.swiper-button-next {
-  
-   color: #57534e;
-   margin-top: 1px;
+  div.swiper-button-prev,
+  div.swiper-button-next {
+    color: #57534e;
+  }
 }
