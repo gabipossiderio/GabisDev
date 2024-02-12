@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { MdLightMode, MdDarkMode, MdEmail } from "react-icons/md";
 import { BsChatHeart, BsGithub, BsLinkedin, BsWhatsapp } from "react-icons/bs";
 import { Transition } from "@headlessui/react";
-import { TbMenu2 } from "react-icons/tb";
+import { TbMenu2, TbBrandNextjs} from "react-icons/tb";
 import {
   IoIosCloseCircleOutline,
   IoLogoJavascript,
@@ -16,6 +16,8 @@ import { SiTypescript, SiTailwindcss } from "react-icons/si";
 import { BsFillChatHeartFill } from "react-icons/bs";
 import { FaCss3Alt } from "react-icons/fa6";
 import { Swiper, SwiperSlide } from "swiper/react";
+import ImgExpertNotes from "./assets/expert-notes.png";
+import ImgTasksPlus from "./assets/tasks-plus.png";
 import ImgGabisLinks from "./assets/gabislinks.png";
 import ImgAgeCalculator from "./assets/age-calculator.png";
 import ImgFuelPrice from "./assets/fuel-price.png";
@@ -211,7 +213,7 @@ function App() {
       </section>
       <section id="about" className="about min-h-screen">
         <Container>
-          <div className="flex sm:flex-row flex-col-reverse justify-center select-none drop-shadow-lg dark:drop-shadow-none sm:items-start items-center gap-5 sm:gap-10">
+          <div className="flex sm:flex-row flex-col-reverse md:mt-7 justify-center select-none drop-shadow-lg dark:drop-shadow-none sm:items-start items-center gap-5 sm:gap-10">
             <div className="flex flex-col text-justify menu">
               {" "}
               <h1 className="text-stone-600  dark:text-white  flex flex-col items-center sm:items-start justify-center mb-4 md:text-8xl text-5xl text font-black uppercase dark:drop-shadow drop-shadow-lg tracking-wide">
@@ -262,8 +264,9 @@ function App() {
             </h2>
           </h1>
           <AnimateOnScroll>
-            <div className="select-none place-items-center pb-3 gap-2 w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="select-none place-items-center pb-3 gap-1 w-full grid grid-cols-2 md:grid-cols-3">
               <SkillCard name="React.Js" Icon={FaReact} />
+              <SkillCard name="Next.Js" Icon={TbBrandNextjs} />
               <SkillCard name="TypeScript" Icon={SiTypescript} />
               <SkillCard name="Tailwind CSS" Icon={SiTailwindcss} />
               <SkillCard name="Python" Icon={FaPython} />
@@ -291,6 +294,24 @@ function App() {
             navigation
             loop={true}
           >
+            <SwiperSlide>
+              <Slide
+                ImgLink={ImgExpertNotes}
+                altText="Site Expert Notes"
+                description="Voice to text note creator using React"
+                repoLink="https://github.com/gabipossiderio/ExpertNotes"
+                projectLink="https://expertnotes.gabis.dev/"
+              />
+            </SwiperSlide>
+            <SwiperSlide>
+              <Slide
+                ImgLink={ImgTasksPlus}
+                altText="Site Tasks Plus"
+                description="React, NextJs, Typescript and Tailwind Tasks Organizer"
+                repoLink="https://github.com/gabipossiderio/TasksOrganizer"
+                projectLink="https://tasksplus.gabis.dev/"
+              />
+            </SwiperSlide>
             <SwiperSlide>
               <Slide
                 ImgLink={ImgGabisLinks}
@@ -381,7 +402,7 @@ function App() {
                <ContactCard name="GitHub" Icon={BsGithub} description="@gabipossiderio" href="https://github.com/gabipossiderio"/>
                <ContactCard name="LinkedIn" Icon={BsLinkedin} description="@gabriella-possiderio" href="https://www.linkedin.com/in/gabriella-possiderio/"/>
                <ContactCard name="E-mail" Icon={MdEmail} description="gabipossiderio@gmail.com" href="mailto:gabipossiderio@gmail.com"/>
-               <ContactCard name="WhatsApp" Icon={BsWhatsapp} description="(21) 99265-6515" href="https://api.whatsapp.com/send?phone=5521992656515"/>
+               <ContactCard name="WhatsApp" Icon={BsWhatsapp} description="(27) 99658-2804" href="https://api.whatsapp.com/send?phone=5527996582804"/>
          
                
               </div>
